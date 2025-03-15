@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #121212;
+    color: #E8A236;
+    transition: background 0.3s ease-in-out;
+}
+
+body.light {
+    background: #f8f5f0;
+    color: #333;
+}
+
+header {
+    padding: 10px 0;
+    font-size: 24px;
+}
+
+#calendar {
+    max-width: 70vw;
+    margin: 20px auto;
+    background: #1e1e1e;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.light #calendar {
+    background: white;
+    color: black;
+}
+
+.popup {
+    position: absolute;
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.popup input, .popup select {
+    border: 1px solid #ccc;
+    padding: 8px;
+    width: 200px;
+}
+
+.popup button {
+    background: #28a745;
+    color: white;
+    padding: 8px;
+    width: 100%;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.popup button:hover {
+    background: #218838;
+}
+
+.evento-completado {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.evento-acciones {
+    display: flex;
+    gap: 5px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 3px;
+    border-radius: 5px;
+    transition: opacity 0.3s ease;
+}
+
+.evento-icono {
+    cursor: pointer;
+    padding: 3px;
+    border-radius: 4px;
+    color: white;
+}
+
+.evento-icono:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Hover en eventos */
+.fc-event:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease-in-out;
+}

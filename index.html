@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario</title>
+    <link rel="stylesheet" href="css/styles.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+
+</head>
+<body>
+
+<header>
+    <h1>Mi Calendario</h1>
+    <button id="toggle-theme">🌙 Modo Oscuro</button>
+</header>
+
+<!-- Filtro de categorías -->
+<select id="filtro-categoria">
+    <option value="Todos">Todos</option>
+    <option value="Trabajo">Trabajo</option>
+    <option value="Personal">Personal</option>
+    <option value="Importante">Importante</option>
+</select>
+
+<div id="calendar"></div>
+
+<!-- Popup para agregar eventos -->
+<div id="popup-evento" class="popup">
+    <h3>Nuevo Evento</h3>
+    <input type="text" id="evento-titulo" placeholder="Título del evento">
+    <input type="date" id="evento-fecha" required>
+    <input type="time" id="evento-hora" required>
+    <select id="evento-categoria">
+        <option value="Trabajo" data-color="#E8A236">Trabajo</option>
+        <option value="Personal" data-color="#28a745">Personal</option>
+        <option value="Importante" data-color="#dc3545">Importante</option>
+    </select>
+    <button id="guardar-evento">Guardar Evento</button>
+</div>
+
+<script src="js/calendar.js"></script>
+
+</body>
+</html>
