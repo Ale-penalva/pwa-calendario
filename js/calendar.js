@@ -6,16 +6,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const Calendar = FullCalendar.Calendar;
 
-    let calendarEl = document.getElementById('calendar');
-    let popupEvento = document.getElementById('popup-evento');
-    let inputTitulo = document.getElementById('evento-titulo');
-    let inputFecha = document.getElementById('evento-fecha');
-    let inputHora = document.getElementById('evento-hora');
-    let inputCategoria = document.getElementById('evento-categoria');
-    let btnGuardar = document.getElementById('guardar-evento');
-    let toggleThemeBtn = document.getElementById('toggle-theme');
-    let filtroCategoria = document.getElementById("filtro-categoria");
+    const calendarEl = document.getElementById('calendar');
+    const popupEvento = document.getElementById('popup-evento');
+    const inputTitulo = document.getElementById('evento-titulo');
+    const inputFecha = document.getElementById('evento-fecha');
+    const inputHora = document.getElementById('evento-hora');
+    const inputCategoria = document.getElementById('evento-categoria');
+    const btnGuardar = document.getElementById('guardar-evento');
+    const filtroCategoria = document.getElementById("filtro-categoria");
+    const selectorTema = document.getElementById("selector-tema");
 
+    // 🔸 Eventos: localStorage
     function cargarEventosDesdeStorage() {
         try {
             return JSON.parse(localStorage.getItem("events")) || [];
@@ -29,18 +30,18 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem("events", JSON.stringify(evts));
     }
 
-    let eventosCargados = cargarEventosDesdeStorage().map(evento => ({
+    const eventosCargados = cargarEventosDesdeStorage().map(evento => ({
         id: evento.id,
         title: evento.title,
         start: evento.start,
         color: evento.color,
-        extendedProps: { 
-            completed: evento.completed || false, 
-            categoria: evento.categoria || "Otros" 
+        extendedProps: {
+            completed: evento.completed || false,
+            categoria: evento.categoria || "Otros"
         }
     }));
 
-    let calendar = new Calendar(calendarEl, {
+    const calendar = new Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'es',
         firstDay: 1,
@@ -52,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function () {
         editable: true,
         selectable: true,
         events: eventosCargados,
-
         eventTimeFormat: {
             hour: '2-digit',
             minute: '2-digit',
@@ -72,8 +72,8 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         eventDrop: function (info) {
-            let eventos = cargarEventosDesdeStorage();
-            let evento = eventos.find(ev => ev.id == info.event.id);
+            const eventos = cargarEventosDesdeStorage();
+            const evento = eventos.find(ev => ev.id == info.event.id);
             if (evento) {
                 evento.start = info.event.start.toISOString();
                 guardarEventosEnStorage(eventos);
@@ -81,17 +81,17 @@ document.addEventListener('DOMContentLoaded', function () {
         },
 
         eventDidMount: function (info) {
-            let acciones = document.createElement("span");
+            const acciones = document.createElement("span");
             acciones.classList.add("evento-acciones");
             acciones.style.display = "none";
 
-            let checkIcon = document.createElement("span");
+            const checkIcon = document.createElement("span");
             checkIcon.innerHTML = "✔️";
             checkIcon.classList.add("evento-icono");
             checkIcon.addEventListener("click", function (e) {
                 e.stopPropagation();
-                let allEvents = cargarEventosDesdeStorage();
-                let evento = allEvents.find(ev => ev.id == info.event.id);
+                const allEvents = cargarEventosDesdeStorage();
+                const evento = allEvents.find(ev => ev.id == info.event.id);
                 if (evento) {
                     evento.completed = !evento.completed;
                     info.event.setProp("classNames", evento.completed ? "evento-completado" : "");
@@ -99,15 +99,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            let editIcon = document.createElement("span");
+            const editIcon = document.createElement("span");
             editIcon.innerHTML = "✏️";
             editIcon.classList.add("evento-icono");
             editIcon.addEventListener("click", function (e) {
                 e.stopPropagation();
-                let nuevoTitulo = prompt("Editar título:", info.event.title);
+                const nuevoTitulo = prompt("Editar título:", info.event.title);
                 if (nuevoTitulo) {
-                    let allEvents = cargarEventosDesdeStorage();
-                    let evento = allEvents.find(ev => ev.id == info.event.id);
+                    const allEvents = cargarEventosDesdeStorage();
+                    const evento = allEvents.find(ev => ev.id == info.event.id);
                     if (evento) {
                         evento.title = nuevoTitulo;
                         info.event.setProp("title", nuevoTitulo);
@@ -116,14 +116,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            let deleteIcon = document.createElement("span");
+            const deleteIcon = document.createElement("span");
             deleteIcon.innerHTML = "🗑️";
             deleteIcon.classList.add("evento-icono");
             deleteIcon.addEventListener("click", function (e) {
                 e.stopPropagation();
                 if (confirm("¿Eliminar este evento?")) {
-                    let allEvents = cargarEventosDesdeStorage();
-                    let filtrados = allEvents.filter(ev => ev.id != info.event.id);
+                    const allEvents = cargarEventosDesdeStorage();
+                    const filtrados = allEvents.filter(ev => ev.id != info.event.id);
                     guardarEventosEnStorage(filtrados);
                     info.event.remove();
                     calendar.refetchEvents();
@@ -135,11 +135,11 @@ document.addEventListener('DOMContentLoaded', function () {
             acciones.appendChild(deleteIcon);
             info.el.appendChild(acciones);
 
-            info.el.addEventListener("mouseenter", function () {
+            info.el.addEventListener("mouseenter", () => {
                 acciones.style.display = "flex";
             });
 
-            info.el.addEventListener("mouseleave", function () {
+            info.el.addEventListener("mouseleave", () => {
                 acciones.style.display = "none";
             });
 
@@ -151,49 +151,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     calendar.render();
 
-    // 🔹 FILTRO DE EVENTOS POR CATEGORÍA (ARREGLADO)
-    filtroCategoria.addEventListener("change", function () {
-        let categoriaSeleccionada = this.value;
-        let eventos = cargarEventosDesdeStorage();
-
-        let eventosFiltrados = eventos.filter(evento => 
-            categoriaSeleccionada === "Todos" || evento.categoria === categoriaSeleccionada
-        );
-
-        calendar.getEvents().forEach(event => event.remove()); // Elimina eventos actuales
-        eventosFiltrados.forEach(evento => {
-            calendar.addEvent({
-                id: evento.id,
-                title: evento.title,
-                start: evento.start,
-                color: evento.color,
-                extendedProps: { categoria: evento.categoria }
-            });
-        });
-    });
-
+    // 🔹 Guardar nuevo evento
     btnGuardar.addEventListener('click', function () {
         if (inputTitulo.value.trim() === "" || inputFecha.value === "") {
             alert("⚠️ Debes ingresar un título y una fecha.");
             return;
         }
 
-        let timeVal = inputHora.value || "00:00";
-        let dateTime = `${inputFecha.value}T${timeVal}:00`;
-        let catOption = inputCategoria.options[inputCategoria.selectedIndex];
-        let colorVal = catOption.getAttribute("data-color") || "#E8A236";
-        let newId = Date.now();
+        const timeVal = inputHora.value || "00:00";
+        const dateTime = `${inputFecha.value}T${timeVal}:00`;
+        const catOption = inputCategoria.options[inputCategoria.selectedIndex];
+        const colorVal = catOption.getAttribute("data-color") || "#E8A236";
+        const newId = Date.now();
 
-        let nuevoEvento = { 
-            id: newId, 
-            title: inputTitulo.value.trim(), 
-            start: dateTime, 
-            color: colorVal, 
-            categoria: inputCategoria.value, 
-            completed: false 
+        const nuevoEvento = {
+            id: newId,
+            title: inputTitulo.value.trim(),
+            start: dateTime,
+            color: colorVal,
+            categoria: inputCategoria.value,
+            completed: false
         };
 
-        let evts = cargarEventosDesdeStorage();
+        const evts = cargarEventosDesdeStorage();
         evts.push(nuevoEvento);
         guardarEventosEnStorage(evts);
 
@@ -212,16 +192,44 @@ document.addEventListener('DOMContentLoaded', function () {
         inputHora.value = "";
     });
 
-    function aplicarTema() {
-        let tema = localStorage.getItem("tema") || "dark";
-        document.body.classList.toggle("light", tema === "light");
-        toggleThemeBtn.textContent = tema === "light" ? "🌙 Modo Oscuro" : "☀️ Modo Claro";
+    // 🔸 Filtro por categoría
+    filtroCategoria.addEventListener("change", function () {
+        const categoriaSeleccionada = this.value;
+        const eventos = cargarEventosDesdeStorage();
+        const eventosFiltrados = eventos.filter(evento =>
+            categoriaSeleccionada === "Todos" || evento.categoria === categoriaSeleccionada
+        );
+
+        calendar.getEvents().forEach(event => event.remove());
+        eventosFiltrados.forEach(evento => {
+            calendar.addEvent({
+                id: evento.id,
+                title: evento.title,
+                start: evento.start,
+                color: evento.color,
+                extendedProps: { categoria: evento.categoria }
+            });
+        });
+    });
+
+    // 🔸 Temas personalizados (5 estilos)
+    function aplicarTema(nombreTema) {
+        document.body.className = ""; // limpia todas las clases
+        document.body.classList.add(`theme-${nombreTema}`);
+        localStorage.setItem("tema", nombreTema);
+        if (selectorTema) selectorTema.value = nombreTema;
     }
 
-    aplicarTema();
-    toggleThemeBtn.addEventListener('click', function () {
-        let nuevoTema = document.body.classList.contains("light") ? "dark" : "light";
-        localStorage.setItem("tema", nuevoTema);
-        aplicarTema();
-    });
+    if (selectorTema) {
+        selectorTema.addEventListener("change", e => aplicarTema(e.target.value));
+    }
+
+    aplicarTema(localStorage.getItem("tema") || "default");
 });
+
+// 🔹 Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('✅ Service Worker registrado', reg))
+        .catch(err => console.error('❌ Error al registrar el Service Worker', err));
+}

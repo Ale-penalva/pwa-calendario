@@ -1,46 +1,70 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario</title>
-    <link rel="stylesheet" href="css/styles.css"> 
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-    <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendario Interactivo</title>
 
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+
+  <!-- estilos personalizados -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Favicon opcional -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
 </head>
 <body>
 
-<header>
-    <h1>Mi Calendario</h1>
-    <button id="toggle-theme">🌙 Modo Oscuro</button>
-</header>
-
-<!-- Filtro de categorías -->
-<select id="filtro-categoria">
-    <option value="Todos">Todos</option>
-    <option value="Trabajo">Trabajo</option>
-    <option value="Personal">Personal</option>
-    <option value="Importante">Importante</option>
+  <header>
+    <h1>📅 Mi Calendario Interactivo</h1>
+    <label for="selector-tema">🎨 Tema: </label>
+    <select id="selector-tema">
+  <option value="default">Oscuro</option>
+  <option value="light">Claro</option>
+  <option value="ocean">Océano</option>
+  <option value="forest">Bosque</option>
+  <option value="atardecer">Atardecer</option>
 </select>
 
-<div id="calendar"></div>
+  </header>
 
-<!-- Popup para agregar eventos -->
-<div id="popup-evento" class="popup">
-    <h3>Nuevo Evento</h3>
-    <input type="text" id="evento-titulo" placeholder="Título del evento">
-    <input type="date" id="evento-fecha" required>
-    <input type="time" id="evento-hora" required>
-    <select id="evento-categoria">
-        <option value="Trabajo" data-color="#E8A236">Trabajo</option>
-        <option value="Personal" data-color="#28a745">Personal</option>
-        <option value="Importante" data-color="#dc3545">Importante</option>
+  <div>
+    <label for="filtro-categoria">📂 Filtrar por categoría:</label>
+    <select id="filtro-categoria">
+      <option value="Todos">Todos</option>
+      <option value="Trabajo">Trabajo</option>
+      <option value="Estudio">Estudio</option>
+      <option value="Salud">Salud</option>
+      <option value="Ocio">Ocio</option>
+      <option value="Otros">Otros</option>
     </select>
-    <button id="guardar-evento">Guardar Evento</button>
-</div>
+  </div>
 
-<script src="js/calendar.js"></script>
+  <div id="calendar"></div>
+
+  <!-- Popup para crear eventos -->
+  <div class="popup" id="popup-evento">
+    <input id="evento-titulo" type="text" placeholder="Título del evento" />
+    <input id="evento-fecha" type="date" />
+    <input id="evento-hora" type="time" />
+    
+    <select id="evento-categoria">
+      <option value="Trabajo" data-color="#1E88E5">Trabajo</option>
+      <option value="Estudio" data-color="#43A047">Estudio</option>
+      <option value="Salud" data-color="#E53935">Salud</option>
+      <option value="Ocio" data-color="#8E24AA">Ocio</option>
+      <option value="Otros" data-color="#E8A236" selected>Otros</option>
+    </select>
+
+    <button id="guardar-evento">Guardar Evento</button>
+  </div>
+
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+  <!-- Script principal -->
+  <script src="js/calendar.js"></script>
 
 </body>
 </html>

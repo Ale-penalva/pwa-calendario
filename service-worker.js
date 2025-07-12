@@ -1,29 +1,44 @@
-const CACHE_NAME = "calendario-v1";
+const CACHE_NAME = "calendar-static-v1";
 const urlsToCache = [
+  "/",
   "/index.html",
-  "/manifest.json",
   "/css/styles.css",
   "/js/calendar.js",
-  "/js/sw-register.js",
-  "/icon-192x192.png",
-  "/icon-512x512.png"
+  "/manifest.json",
+  "https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"
 ];
 
-// Instalación del Service Worker y cacheo de archivos
+// ✅ Instalación: cachear los recursos esenciales
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log("Archivos cacheados");
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(urlsToCache);
+    })
+  );
+  self.skipWaiting(); // activa el SW sin esperar
+});
+
+// ✅ Fetch: responder con caché primero
+self.addEventListener("fetch", event => {
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
+    })
   );
 });
 
-// Interceptar peticiones y servir desde caché si es posible
-self.addEventListener("fetch", event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
+// 🧹 Limpieza de versiones antiguas (opcional pero recomendable)
+self.addEventListener("activate", event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames =>
+      Promise.all(
+        cacheNames.map(name => {
+          if (!cacheWhitelist.includes(name)) {
+            return caches.delete(name);
+          }
+        })
+      )
+    )
   );
 });
